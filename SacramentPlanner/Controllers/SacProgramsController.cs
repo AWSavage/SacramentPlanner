@@ -19,9 +19,17 @@ namespace SacramentPlanner.Controllers
         }
 
         // GET: SacPrograms
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Program.ToListAsync());
+            var programs = from m in _context.Program
+                         select m;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                programs = programs.Where(s => s.FirstSpeaker.Contains(searchString));
+            }
+
+            return View(await programs.ToListAsync());
         }
 
         // GET: SacPrograms/Details/5
